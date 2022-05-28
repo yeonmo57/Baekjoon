@@ -1,20 +1,10 @@
 #include <iostream>
-#include <vector>
+
 using namespace std;
 
-vector<int>wine;
-vector<int> D;
+int arr[10000];
+int dp[10000];
 
-int max(int a, int b) {
-	return a > b ? a : b;
-}
-
-int DP() {
-	for (int i = 3; i < wine.size(); i++) {
-		D.push_back(max(max(D[i - 3] + wine[i - 1] + wine[i], D[i - 2] + wine[i]), D[i - 1]));
-	}
-	return D[wine.size() - 1];
-}
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
@@ -22,16 +12,22 @@ int main() {
 
 	int n;
 	cin >> n;
+	for (int i = 1; i <= n; i++) {
+		cin >> arr[i];
+	}
 
-	for (int i = 0; i < 3; i++) {
-		wine.push_back(0);
-		D.push_back(0);
+	dp[1] = arr[1];
+	dp[2] = arr[1] + arr[2];
+
+	for (int i = 3; i <= n; i++) {
+		dp[i] = dp[i - 1];
+		if (dp[i] < dp[i - 2] + arr[i]) {
+			dp[i] = dp[i - 2] + arr[i];
+		}
+		if (dp[i] < dp[i - 3] + arr[i - 1] + arr[i]) {
+			dp[i] = dp[i - 3] + arr[i - 1] + arr[i];
+		}
 	}
-	int k;
-	for (int i = 0; i < n; i++) {
-		cin >> k;
-		wine.push_back(k);
-	}
-	cout << DP() << endl;;
+	cout << dp[n] << '\n';
 }
 
