@@ -18,9 +18,6 @@ int solution(int k, vector<vector<int>> dungeons) {
                  temp-=dungeons[i][1];
                  count++;
              }
-            else {
-                break;
-            }
         }
         answer = max(count, answer);
         
