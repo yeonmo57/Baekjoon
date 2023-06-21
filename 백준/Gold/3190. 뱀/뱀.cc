@@ -1,87 +1,91 @@
 #include <iostream>
 #include <queue>
-
+#include <string>
 using namespace std;
 
-bool Is_There_Snake[101][101];
+bool map[101][101];
 int n, k, l; // 보드 크기, 사과 개수, 방향 변환 횟수
-int dy[4] = { 0,1,0,-1 };
-int dx[4] = { 1,0,-1,0 };
-bool board[101][101];
-char dir[10001];
-int now_Direction;
+int dx[4] = { 0,1,0,-1 };
+int dy[4] = { 1,0,-1,0 };
+
+bool apple[101][101];
+int dir[10001];
+int d;
 int main()
 {
-	// 뱀은 큐. 뱀의 길이가 선입 선출
-	queue<pair<int, int>> snake;
-	cin >> n >> k;
-	for (int i = 0; i < k; i++)
-	{
-		int x, y;
-		cin >> x >> y;
-		board[x][y] = true;
-	}
-	cin >> l;
-	for (int i = 0; i < l; i++)
-	{
-		int x;
-		char c;
-		cin >> x >> c;
-		dir[x] = c;
-	}
+    // 뱀은 큐. 뱀의 길이가 선입 선출
+    queue<pair<int, int>> snake;
+    cin >> n >> k;
+    for (int i = 0; i < k; i++)
+    {
+        int x, y;
+        cin >> x >> y;
+        apple[x][y] = true;
+    }
+    cin >> l;
+    for (int i = 0; i < l; i++)
+    {
+        int x;
+        string s;
+        cin >> x >> s;
+        if (s == "L")
+        {
+            dir[x] = -1; // 왼쪽으로 회전
+        }
+        else
+        {
+            dir[x] = 1; // 오른쪽으로 회전
+        }
+    }
 
-	int answer_Time = 0;
-	snake.push(make_pair(1, 1));
-	Is_There_Snake[1][1] = true;
-	now_Direction = 0;
-	while (1)
-	{
-		answer_Time++;
+    int time = 0;
+    snake.push(make_pair(1, 1));
+    map[1][1] = true;
+    d = 0;
+    while (1)
+    {
+        time++;
+        int x = snake.back().first;
+        int y = snake.back().second;
 
-		int next_col = snake.back().first + dy[now_Direction];
-		int next_row = snake.back().second + dx[now_Direction];
+        int nx = x + dx[d];
+        int ny = y + dy[d];
 
-		if (next_col < 1 || next_col > n || next_row < 1 || next_row > n)
-		{
-			break;
-		}
+        if (nx < 1 || nx > n || ny < 1 || ny > n)
+        {
+            break;
+        }
 
-		snake.push(make_pair(next_col, next_row));
+        snake.push(make_pair(nx, ny));
 
-		if (dir[answer_Time] == 'D') //L
-		{
-			now_Direction += 1;
-			if (now_Direction == 4) now_Direction = 0;
-		}
-		else if (dir[answer_Time] == 'L')
-		{
-			now_Direction -= 1;
-			if (now_Direction == -1) now_Direction = 3;
-		}
+        if (dir[time] == 1)
+        {
+            d += 1;
+            if (d == 4) d = 0;
+        }
 
+        else if (dir[time] == -1)
+        {
+            d -= 1;
+            if (d == -1) d = 3;
+        }
 
-		if (board[next_col][next_row] == 1)
-		{
-			board[next_col][next_row] = 0;
-		}
-		else
-		{
-			if (Is_There_Snake[next_col][next_row] == 1)
-			{
-				break;
-			}
-			Is_There_Snake[snake.front().first][snake.front().second] = false;
-			snake.pop();
-		}
+        if (apple[nx][ny])
+        {
+            apple[nx][ny] = false;
+        }
+        else
+        {
+            if (map[nx][ny])
+            {
+                break;
+            }
+            map[snake.front().first][snake.front().second] = false;
+            snake.pop();
+        }
 
-		if (Is_There_Snake[next_col][next_row] == 1)
-		{
-			break;
-		}
-		else
-		{
-			Is_There_Snake[next_col][next_row] = 1;
-		}
-	}
-	cout << answer_Time;
+        map[nx][ny] = true;
+    }
+    cout << time;
+    return 0;
 }
