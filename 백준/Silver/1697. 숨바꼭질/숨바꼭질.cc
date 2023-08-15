@@ -8,6 +8,15 @@ bool visited[MAX_POSITION + 1] = { false };
 
 int startPosition, target;
 
+void VisitNextPosition(queue<pair<int, int>>& q, int position, int time)
+{
+	if (position >= 0 && position <= MAX_POSITION && !visited[position])
+	{
+		q.push(make_pair(position, time));
+		visited[position] = true;
+	}
+}
+
 int bfs()
 {
 	queue<pair<int, int>> map;
@@ -25,21 +34,9 @@ int bfs()
 			return currentTime;
 		}
 
-		if (currentPosition - 1 >= 0 && !visited[currentPosition - 1])
-		{
-			map.push(make_pair(currentPosition - 1, currentTime + 1));
-			visited[currentPosition - 1] = true;
-		}
-		if (currentPosition + 1 <= MAX_POSITION && !visited[currentPosition + 1])
-		{
-			map.push(make_pair(currentPosition + 1, currentTime + 1));
-			visited[currentPosition + 1] = true;
-		}
-		if (currentPosition * 2 <= MAX_POSITION && !visited[currentPosition * 2])
-		{
-			map.push(make_pair(currentPosition * 2, currentTime + 1));
-			visited[currentPosition * 2] = true;
-		}
+		VisitNextPosition(map, currentPosition - 1, currentTime + 1);
+		VisitNextPosition(map, currentPosition + 1, currentTime + 1);
+		VisitNextPosition(map, currentPosition * 2, currentTime + 1);
 	}
 }
 
